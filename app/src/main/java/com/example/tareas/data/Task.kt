@@ -2,8 +2,8 @@ package com.example.tareas.data
 
 data class Task(
     val id: Int,
-    val title: String,
-    val done: Boolean
+    var title: String,
+    var done: Boolean = false
 ) {
     companion object {
         const val TABLE_NAME = "Tasks"
