@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity() {
 
         taskDAO = TaskDAO(this)
 
-        taskList = taskDAO.findAll()
-
         adapter = TaskAdapter(taskList, ::onItemClick, ::onItemCheck, ::onItemEdit, ::onItemDelete)
 
         binding.recyclerView.adapter = adapter
@@ -55,10 +53,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        reloadData()
+    }
+
     fun reloadData() {
-        // TODO: Se puede optimizar
         taskList = taskDAO.findAll()
-        adapter.updateData(taskList)
+        adapter.updateData(taskList.map { it.copy() })
     }
 
     fun showTaskDialog(task: Task) {

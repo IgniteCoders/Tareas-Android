@@ -2,10 +2,12 @@ package com.example.tareas.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tareas.R
 import com.example.tareas.data.Task
 import com.example.tareas.databinding.ItemTaskBinding
+import com.example.tareas.utils.TaskDiffUtil
 
 class TaskAdapter(
     var items: List<Task>,
@@ -25,26 +27,28 @@ class TaskAdapter(
         val task = items[position]
         holder.render(task)
         holder.itemView.setOnClickListener {
-            onItemClick(position)
+            onItemClick(holder.bindingAdapterPosition)
         }
         holder.binding.doneCheckBox.setOnCheckedChangeListener { _, _ ->
             if (holder.binding.doneCheckBox.isPressed) {
-                onItemCheck(position)
+                onItemCheck(holder.bindingAdapterPosition)
             }
         }
         holder.binding.editButton.setOnClickListener {
-            onItemEdit(position)
+            onItemEdit(holder.bindingAdapterPosition)
         }
         holder.binding.deleteButton.setOnClickListener {
-            onItemDelete(position)
+            onItemDelete(holder.bindingAdapterPosition)
         }
     }
 
     override fun getItemCount(): Int = items.size
 
     fun updateData(dataSet: List<Task>) {
+        val diffCallbacks = TaskDiffUtil(items, dataSet)
+        val diffResult = DiffUtil.calculateDiff(diffCallbacks)
         items = dataSet
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }
 
